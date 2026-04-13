@@ -1,0 +1,73 @@
+﻿@model TMS201.Models.Employee
+
+<div class="container mt-4">
+    <div class="card shadow p-4">
+
+        <!-- HEADER -->
+        <h4 class="mb-4 text-white fw-bold">
+            <i class="bi bi-person-plus-fill text-info me-2"></i>
+            Add Employee
+        </h4>
+
+        <form asp-action="Create" method="post">
+
+            <!-- NAME -->
+            <div class="mb-3">
+                <label class="form-label text-light">
+                    <i class="bi bi-person me-1"></i> Employee Name
+                </label>
+
+                <input asp-for="Name"
+                       class="form-control"
+                       placeholder="Enter employee name" />
+            </div>
+
+            <!-- DESIGNATION -->
+            <div class="mb-3">
+                <label class="form-label text-light">
+                    <i class="bi bi-briefcase me-1"></i> Designation
+                </label>
+
+                <input list="designationList"
+                       asp-for="Designation"
+                       class="form-control"
+                       placeholder="Select or type designation" />
+
+                <datalist id="designationList">
+                    <option value="Software Developer"></option>
+                    <option value="Senior Developer"></option>
+                    <option value="Team Lead"></option>
+                    <option value="Project Manager"></option>
+                    <option value="HR Manager"></option>
+                    <option value="HR Executive"></option>
+                    <option value="QA Tester"></option>
+                    <option value="Automation Tester"></option>
+                    <option value="UI/UX Designer"></option>
+                    <option value="Frontend Developer"></option>
+                    <option value="Backend Developer"></option>
+                    <option value="Full Stack Developer"></option>
+                    <option value="DevOps Engineer"></option>
+                    <option value="System Administrator"></option>
+                    <option value="Database Administrator"></option>
+                    <option value="Support Engineer"></option>
+                    <option value="Network Engineer"></option>
+                    <option value="Intern"></option>
+                    <option value="Trainee"></option>
+                </datalist>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-success px-3">
+                    <i class="bi bi-check-circle-fill me-1"></i> Save
+                </button>
+
+                <a asp-action="Index" class="btn btn-outline-light px-3">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Back
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>

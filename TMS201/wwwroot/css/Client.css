@@ -1,0 +1,133 @@
+﻿
+
+/* 🌑 PURE DARK THEME OVERRIDES */
+.client-card {
+    background: #111827 !important; /* Darker Slate/Black */
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* Table Reset */
+.table {
+    background-color: transparent !important;
+    color: #e5e7eb !important;
+    margin-bottom: 0;
+}
+
+    /* Header Styling */
+    .table thead th {
+        background: #1f2937 !important; /* Dark Greyish Blue */
+        color: #9ca3af !important;
+        border-bottom: 2px solid #374151 !important;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 1rem !important;
+    }
+
+    /* Rows Styling */
+    .table tbody td {
+        background-color: transparent !important;
+        color: #d1d5db !important;
+        border-bottom: 1px solid #1f2937 !important;
+        padding: 1rem !important;
+    }
+
+/* Hover effect */
+.table-hover tbody tr:hover {
+    background-color: #1f2937 !important;
+    transition: 0.2s ease-in-out;
+}
+
+/* 🟢 Status Pills */
+.badge-active {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-inactive {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* 📦 Modal Styling */
+.dark-modal-content {
+    background: #111827 !important;
+    border: 1px solid #374151 !important;
+}
+
+.dark-modal-header {
+    border-bottom: 1px solid #374151 !important;
+}
+
+.dark-modal-footer {
+    border-top: 1px solid #374151 !important;
+    background: #1f2937;
+}
+
+.form-control-dark {
+    background: #030712 !important; /* Pure Dark Input */
+    border: 1px solid #374151 !important;
+    color: #f9fafb !important;
+}
+
+    .form-control-dark:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
+    }
+
+/* Actions Dropdown Fix */
+.dropdown .btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    opacity: 1 !important;
+}
+
+.dropdown-menu-dark {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    z-index: 9999 !important; /* Taaki table ke niche na chhup jaye */
+}
+
+.dropdown-item:hover {
+    background-color: #374151 !important;
+}
+
+
+/* Breadcrumb */
+.breadcrumb {
+    background: transparent;
+    margin-bottom: 6px;
+    padding: 0;
+}
+
+/* Breadcrumb items */
+.breadcrumb-item {
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+}
+
+    /* Links */
+    .breadcrumb-item a {
+        color: #60a5fa;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.2s ease;
+    }
+
+        .breadcrumb-item a:hover {
+            color: #93c5fd;
+        }
+
+    /* Divider color */
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: #4b5563;
+    }
+
+    /* Active page */
+    .breadcrumb-item.active {
+        color: #9ca3af;
+        font-weight: 500;
+    }

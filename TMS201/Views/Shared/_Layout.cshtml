@@ -1,0 +1,288 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>@ViewData["Title"] | SABA TECHNOSOFT INDIA PVT. LTD.</title>
+
+    <link rel="icon" type="image/x-icon" href="~/images/favicon.ico" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon-16x16.png">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="~/images/apple-touch-icon.png">
+
+    <link rel="manifest" href="~/images/site.webmanifest">
+    
+    <meta name="theme-color" content="#1e293b">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TMS201.styles.css" asp-append-version="true" />
+    <link href="~/css/Layout.css" rel="stylesheet" asp-append-version="true" />
+
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  
+
+    @{
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var hideNavbar = (currentController == "Account" && (currentAction == "Login" || currentAction == "Signup"));
+        var username = HttpContextAccessor.HttpContext?.Session.GetString("Username");
+        var role = HttpContextAccessor.HttpContext?.Session.GetString("Role");
+    }
+
+    <div class="d-flex flex-grow-1">
+
+        @if (!hideNavbar)
+        {
+            <nav id="sidebar" class="text-white p-0">
+
+                <div class="sidebar-effects">
+
+            <div class="sidebar-bubbles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+            </div>
+
+            <div class="sidebar-gradient"></div>
+
+            </div>
+
+                <button class="btn btn-sm btn-outline-light d-lg-none" onclick="toggleSidebar()" style="position:absolute; right:10px; top:10px; z-index:100;">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+                <div class="company-branding text-center">
+                    <div class="company-name">Saba Technosoft</div>
+                    <div class="company-sub">India Pvt. Ltd.</div>
+                </div>
+
+               <div class="flex-grow-1 px-3 mt-3" style="overflow-y: auto;">
+    <div class="text-uppercase small text-light mb-2 px-2" style="font-size: 0.6rem; font-weight: 800; opacity: 0.75;">Menu</div>
+    <ul class="nav flex-column gap-1 mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(currentAction == "Dashboard" ? "active-sidebar" : "")" asp-controller="Ticket" asp-action="Dashboard">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+        </li>
+
+ 
+        <li class="nav-item">
+            <a class="nav-link @(currentAction == "Create" ? "active-sidebar" : "")" asp-controller="Ticket" asp-action="Create">
+                <i class="bi bi-plus-square-fill me-2"></i> New Ticket
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Ticket" && currentAction == "Index" ? "active-sidebar" : "")" asp-controller="Ticket" asp-action="Index">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <span><i class="bi bi-ticket-detailed me-2"></i> Tickets</span>
+                    <span class="badge bg-primary rounded-pill" style="font-size: 0.5rem;">NEW</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="nav-item">
+        <a class="nav-link @(currentAction == "CompletedHistory" ? "active-sidebar" : "")" asp-controller="Ticket" asp-action="CompletedHistory">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <span><i class="bi bi-archive-fill me-2"></i> Archive Vault</span>
+                <i class="bi bi-chevron-right small opacity-50" style="font-size: 0.7rem;"></i>
+            </div>
+        </a>
+    </li>
+
+    </ul>
+
+    @if (role == "SuperAdmin")
+    {
+        <div class="text-uppercase small text-light mb-2 px-2" style="font-size: 0.6rem; font-weight: 800; opacity: 0.75;">Administration</div>
+        <ul class="nav flex-column gap-1 mb-4">
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Account" ? "active-sidebar" : "")" asp-controller="Account" asp-action="Index">
+                    <i class="bi bi-shield-lock-fill me-2"></i> User Access
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Employee" ? "active-sidebar" : "")" asp-controller="Employee" asp-action="Index">
+                    <i class="bi bi-people-fill me-2"></i> Employee Master
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Client" ? "active-sidebar" : "")" asp-controller="Client" asp-action="Index">
+                    <i class="bi bi-people-fill me-2"></i> Client Master
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "TicketBackup" ? "active-sidebar" : "")" asp-controller="TicketBackup" asp-action="Index">
+                    <i class="bi bi-database-fill-down me-2"></i> Data Backup
+                </a>
+            </li>
+        </ul>
+    }
+</div>
+
+
+
+                <div class="sidebar-footer">
+                    <div class="sidebar-bottom-actions">
+                        <a href="#" class="bottom-icon" title="Settings"><i class="bi bi-gear-fill"></i></a>
+                        <a href="#" class="bottom-icon" title="Support"><i class="bi bi-headset"></i></a>
+                        <a href="#" class="bottom-icon" title="DB Backup"><i class="bi bi-cloud-arrow-down-fill"></i></a>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(username))
+                    {
+                        <div class="user-profile-box">
+                            <div class="avatar-box">
+                                @username.Substring(0, 1).ToUpper()
+                            </div>
+                            <div class="user-info-text">
+                                <div class="small fw-bold text-white text-truncate">@username</div>
+                                <div style="font-size: 0.6rem; color: var(--primary-accent); font-weight: 700; text-transform: uppercase;">@role</div>
+                            </div>
+                            <a asp-controller="Account" asp-action="Logout" class="logout-btn-sidebar" title="Logout">
+                                <i class="bi bi-power"></i>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </nav>
+        }
+
+        <div id="mainContent" class="@(hideNavbar ? "full-width" : "")">
+            @if (!hideNavbar)
+            {
+                <header class="bg-primary text-white px-3 d-flex align-items-center justify-content-between topbar shadow">
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn btn-primary border-0 fs-4" onclick="toggleSidebar()">
+                            <i id="menuIcon" class="bi bi-list"></i>
+                        </button>
+                        <h5 class="m-0 fw-semibold d-none d-md-inline" style="font-size: 0.9rem;">@ViewData["Title"]</h5>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 gap-md-3">
+                        <div class="dropdown">
+                            <a class="text-white position-relative" data-bs-toggle="dropdown" href="#" role="button">
+                                <i class="bi bi-bell-fill fs-5"></i>
+                                <span id="notifCount" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size: 0.55rem;">0</span>
+                            </a>
+                         <ul id="notifList" class="dropdown-menu dropdown-menu-end shadow-lg border-0 notification-dropdown">
+                            <li class="px-3 py-2 bg-light border-bottom d-flex justify-content-between align-items-center">
+                                <span class="fw-bold small">Notifications</span>
+                            </li>
+
+                            <div class="notif-body"></div>
+
+                          <li class="text-center p-2 border-top">
+                            <button id="loadMoreBtn" class="btn btn-sm btn-primary w-100" onclick="loadMore(event)" style="display:none;">
+                                Load More
+                            </button>
+                           </li>
+                          </ul>
+
+                        </div>
+                        <div class="vr mx-1 mx-md-2 bg-white opacity-50"></div>
+                        <div class="dropdown">
+                            <a class="d-flex align-items-center gap-2 text-white text-decoration-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <div class="bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm"
+                                     style="width: 32px; height: 32px; border-radius: 8px; font-size: 0.8rem;">
+                                    @username?.Substring(0, 1).ToUpper()
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                <li><a class="dropdown-item py-2 small" asp-controller="Account" asp-action="Profile"><i class="bi bi-person me-2"></i> Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item py-2 small text-danger" asp-controller="Account" asp-action="Logout"><i class="bi bi-power me-2"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </header>
+            }
+
+            <main class="p-3 p-md-4">
+                @RenderBody()
+            </main>
+
+            <footer class="footer-custom mt-auto">
+                <div class="container-fluid text-center">
+
+                    <!-- Company -->
+                    <div class="footer-company">
+                        © 2026 <span>SABA TECHNOSOFT INDIA PVT. LTD.</span>
+                    </div>
+
+                    <!-- Developer -->
+                    <div class="footer-dev">
+                        Made with <span class="heart">❤️</span> BY <span class="dev-name">ANIKET</span>
+                    </div>
+
+
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- From Uiverse.io by ShaikhWahid99 --> 
+<div class="liquid-loader" id="pageLoader">
+  <div class="loading-text">
+    Loading<span class="dot">.</span><span class="dot">.</span
+    ><span class="dot">.</span>
+  </div>
+
+  <div class="loader-track">
+    <div class="liquid-fill"></div>
+  </div>
+</div>
+
+
+</div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/layout-notifications.js"></script>
+    <script src="~/js/layout-ui.js"></script>
+    <script>
+
+        @if (TempData["success"] != null)
+        {
+            <text>toastr.success("@TempData["success"]");</text>
+        }
+
+        window.addEventListener("load", function () {
+
+    const loader = document.getElementById("pageLoader");
+
+    setTimeout(() => {
+        loader.style.opacity = "0";
+        loader.style.transition = "opacity 0.4s ease";
+
+        setTimeout(() => {
+            loader.style.display = "none";
+        }, 400);
+
+    }, 300);
+
+});
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

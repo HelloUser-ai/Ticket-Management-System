@@ -1,0 +1,64 @@
+﻿@model IEnumerable<TMS201.Models.Employee>
+
+<div class="main-wrapper py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h3 class="text-white fw-semibold mb-0">
+            <i class="bi bi-people-fill text-info me-2"></i>
+            Employee List
+        </h3>
+        
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-person-plus-fill me-1"></i>
+            Add Employee
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-3">Name</th>
+                        <th>Designation</th>
+                        <th class="text-center">Created Date</th>
+                        <th class="text-center" style="width:120px;">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var emp in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-medium">@emp.Name</td>
+                            <td><span class="badge bg-secondary">@emp.Designation</span></td>
+                            <td class="text-center">@emp.CreatedDate.ToString("dd-MM-yyyy")</td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-outline-primary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Delete this employee?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@emp.Id" />
+                                        <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="javascript:history.back()" class="btn btn-sm btn-outline-light mb-4">
+        <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+
+
+
+    @* 🔥 PAGINATION CALLED FROM PARTIAL FILE *@
+    <partial name="_Pagination" />
+</div>

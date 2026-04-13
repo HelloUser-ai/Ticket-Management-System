@@ -1,0 +1,90 @@
+﻿@model TMS201.Models.User
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3 border-0 text-white-50">
+                <i class="bi bi-arrow-left me-1"></i> Back to User Access
+            </a>
+
+            <div class="card border-0 shadow-lg" style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border-radius: 24px;">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <div class="text-center mb-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-person-plus text-success fs-2"></i>
+                        </div>
+                        <h3 class="fw-bold text-white">Add New User</h3>
+                        <p class="text-muted small">Enter details to create a new system account</p>
+                    </div>
+
+                    <form asp-action="Add" method="post">
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-0 text-success"><i class="bi bi-person-badge"></i></span>
+                                <input asp-for="Username" class="form-control bg-dark text-white border-0 py-2" placeholder="Ex: aniket_saba" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small fw-semibold">Temporary Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-0 text-success"><i class="bi bi-key"></i></span>
+                                <input asp-for="Password" type="text" class="form-control bg-dark text-white border-0 py-2" placeholder="Create a strong password" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Assign Role</label>
+                            <select name="Role" class="form-select bg-dark text-white border-secondary" required>
+                                <option value="" selected disabled>-- Select Role --</option>
+                                <option value="SuperAdmin">SuperAdmin</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Employee">Employee</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 pt-2">
+                            <button type="submit" class="btn btn-success py-2 fw-bold shadow">
+                                <i class="bi bi-person-check-fill me-2"></i> Create Account
+                            </button>
+                            <button type="reset" class="btn btn-link text-white-50 btn-sm text-decoration-none">Clear Form</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <p class="text-center text-muted mt-4 small">
+                <i class="bi bi-info-circle me-1"></i> New users will be able to login immediately after creation.
+            </p>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styling for Inputs */
+    .form-control:focus, .form-select:focus {
+        background-color: #0f172a !important;
+        color: #fff !important;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2) !important;
+        border: none !important;
+    }
+    
+    .input-group-text {
+        border-radius: 12px 0 0 12px !important;
+    }
+    
+    input.form-control, select.form-select {
+        border-radius: 0 12px 12px 0 !important;
+    }
+
+    .btn-success {
+        border-radius: 12px !important;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    }
+</style>

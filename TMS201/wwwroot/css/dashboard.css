@@ -1,0 +1,154 @@
+﻿
+:root {
+    --bg-main: #0f172a;
+    --card-bg: #1e293b;
+    --accent-blue: #3b82f6;
+    --accent-green: #22c55e;
+    --accent-amber: #f59e0b;
+    --text-muted: #94a3b8;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: #f8fafc;
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+}
+
+/* 💎 PREMIUM CARDS */
+.card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+/* 📊 STAT CARDS MODIFIED */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 120px;
+}
+
+    .stat-card h6 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        opacity: 0.7;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+.stat-icon {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    font-size: 4rem;
+    opacity: 0.15;
+    transform: rotate(-15deg);
+}
+
+.bg-gradient-blue {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.bg-gradient-amber {
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.bg-gradient-green {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.bg-gradient-gray {
+    background: linear-gradient(135deg, #475569, #1e293b);
+}
+
+/* 🔍 FILTER BAR STYLING */
+.filter-section {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.form-control, .form-select {
+    background-color: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: white !important;
+    border-radius: 10px;
+    padding: 10px 15px;
+}
+
+    .form-control:focus {
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        border-color: var(--accent-blue) !important;
+    }
+
+/* 📈 CHART CONTAINER */
+.chart-box {
+    padding: 1.5rem;
+    height: 100%;
+}
+
+h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* LEGEND CUSTOM */
+.custom-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* BIG DEVICE OPTIMIZATION */
+@@media (min-width: 1400px) {
+    .container-fluid {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+}
+
+@@media (max-width: 768px) {
+    .stat-card h2 {
+        font-size: 1.8rem;
+    }
+}

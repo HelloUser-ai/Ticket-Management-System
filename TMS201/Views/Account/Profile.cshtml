@@ -1,0 +1,250 @@
+﻿@model TMS201.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<style>
+    :root {
+        --saba-blue: #3b82f6;
+        --saba-dark: #0f172a;
+        --saba-card: #1e293b;
+        --saba-accent: #60a5fa;
+    }
+
+    body {
+        background-color: var(--saba-dark);
+        color: #f8fafc;
+    }
+
+    .profile-cover {
+        height: 140px;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        border-radius: 20px 20px 0 0;
+        position: relative;
+    }
+
+        .profile-cover::after {
+            content: "SABA TECHNOSOFT";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.1);
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+
+    .card {
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: var(--saba-card) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .avatar-main {
+        width: 100px;
+        height: 100px;
+        background: var(--saba-blue);
+        border: 6px solid var(--saba-card);
+        border-radius: 24px;
+        margin-top: -50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        z-index: 10;
+        position: relative;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    .info-label {
+        color: var(--saba-accent);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .info-value {
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .icon-box {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 10px;
+        color: var(--saba-accent);
+        margin-right: 15px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .saba-pass-box {
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    #myPassword {
+        background: transparent;
+        border: none;
+        color: white;
+        font-family: 'Courier New', Courier, monospace;
+        letter-spacing: 2px;
+        font-size: 1.2rem;
+    }
+
+    .btn-toggle-view {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--saba-accent);
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <a href="javascript:history.back()" class="text-secondary text-decoration-none small d-flex align-items-center">
+            <i class="bi bi-chevron-left me-1"></i> Dashboard / <span class="text-white ms-1"> My Profile</span>
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card overflow-hidden border-0">
+                <div class="profile-cover"></div>
+                <div class="card-body text-center pt-0">
+                    <div class="avatar-main mx-auto">
+                        @Model.UserData.Username.Substring(0, 1).ToUpper()
+                    </div>
+
+                    <h4 class="mt-3 mb-1 fw-bold text-white">@Model.UserData.Username</h4>
+    
+                    <p class="text-info small fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">
+                        @Model.UserData.Role
+                    </p>
+
+                    @if (Model.UserData.Role == "Employee")
+                    {
+                        <div class="text-secondary small mb-3">
+                            <i class="bi bi-briefcase me-1"></i> @Model.Designation
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3"></div>
+                    }
+    
+                    <div class="d-flex justify-content-center gap-2">
+                        @if (Model.UserData.Role == "Employee")
+                        {
+                            <span class="badge bg-black bg-opacity-40 border border-secondary px-3 py-2 rounded-pill text-white">
+                                Emp ID: #@Model.EmployeeId
+                            </span>
+                        }
+                        <span class="badge bg-primary px-3 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i> ACTIVE
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body p-4">
+                    <h6 class="mb-4 fw-bold text-white border-bottom border-secondary pb-3">
+                        <i class="bi bi-person-badge me-2 text-primary"></i>Identity Details
+                    </h6>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon-box"><i class="bi bi-envelope-at"></i></div>
+                        <div>
+                            <div class="info-label">Corporate Email</div>
+                            <div class="info-value">@Model.UserData.Username.ToLower()@@sabatech.com</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-0">
+                        <div class="icon-box"><i class="bi bi-shield-check"></i></div>
+                        <div>
+                            <div class="info-label">Access Level</div>
+                            <div class="info-value">@Model.UserData.Role (SABA-Admin)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card h-100 border-0 shadow-lg position-relative overflow-hidden">
+                <i class="bi bi-shield-lock position-absolute end-0 bottom-0 m-n5 text-primary opacity-10 d-none d-md-block" style="font-size: 18rem;"></i>
+                
+                <div class="card-body p-4 p-md-5 position-relative" style="z-index: 2;">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-4 me-3 border border-primary border-opacity-25">
+                            <i class="bi bi-key-fill text-primary fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold m-0 text-white">Security Credentials</h3>
+                            <p class="text-light m-0">Manage your encrypted login access</p>
+                        </div>
+                    </div>
+
+                    <div class="saba-pass-box mt-5">
+                        <label class="info-label d-block mb-3">
+                            <i class="bi bi-fingerprint me-1 text-primary"></i> Master Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" id="myPassword" class="form-control" value="@Model.UserData.Password" readonly>
+                            <button class="btn btn-toggle-view px-4" type="button" onclick="togglePass()">
+                                <i id="eyeIcon" class="bi bi-eye-fill fs-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row mt-5 g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-4 bg-black bg-opacity-20 border border-secondary border-opacity-25">
+                                <small class="text-white-50 d-block mb-1 text-uppercase fw-bold" style="font-size: 0.6rem;">Last Password Change</small>
+                                <div class="text-white small">Not changed recently</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-4 bg-black bg-opacity-20 border border-secondary border-opacity-25">
+                                <small class="text-white-50 d-block mb-1 text-uppercase fw-bold" style="font-size: 0.6rem;">Security Status</small>
+                                <div class="text-success small fw-bold">Verified Account</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 p-3 rounded-4 border border-primary border-opacity-25 shadow-sm"
+                         style="background: rgba(13, 110, 253, 0.05); border-left: 5px solid #0d6efd !important;">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center"
+                                 style="width: 45px; height: 45px; flex-shrink: 0;">
+                                <i class="bi bi-shield-check text-primary fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1 small text-uppercase">Security Protocol Active</h6>
+                                <p class="text-secondary small m-0 lh-sm" style="color: #94a3b8 !important;">
+                                    This password is encrypted by <strong class="text-white">SABA Security Engine</strong>.
+                                    <span class="text-warning fw-semibold">Never share your credentials</span>, even with IT staff or management.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/account-profile.js"></script>

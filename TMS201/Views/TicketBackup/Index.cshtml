@@ -1,0 +1,111 @@
+﻿@model IEnumerable<TMS201.Models.TicketBackup>
+
+@{
+    ViewData["Title"] = "Ticket Backup Management";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <button class="btn btn-outline-secondary btn-sm" onclick="history.back()">
+            <i class="bi bi-arrow-left"></i> Back
+        </button>
+
+        <h2 class="mb-0 text-center flex-grow-1">Ticket Backup Management</h2>
+    </div>
+
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th style="width: 50px;">SR</th>
+                    <th>Ticket No</th>
+                    <th>Client / Plant</th>
+                    <th>Task</th>
+                    <th>Status</th>
+                    <th>Deleted Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int currentPage = (int)(ViewBag.CurrentPage ?? 1);
+                    int pageSize = 10;
+                    int serialCount = (currentPage - 1) * pageSize + 1;
+                }
+                
+                @foreach (var backup in Model)
+                {
+                    <tr>
+                        <td class="text-center fw-bold">@serialCount</td>
+                        <td class="fw-bold">@backup.TicketNo</td>
+                        <td>
+                            <small class="text-muted">@backup.ClientName</small><br />
+                            @backup.PlantName (@backup.PlantType)
+                        </td>
+                        <td class="task-column" title="@backup.TaskDetails">@backup.TaskDetails</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary">@backup.TicketStatus</span>
+                        </td>
+                        <td class="text-center">@backup.DeletedDate.ToString("dd-MM-yyyy HH:mm")</td>
+
+                        <td class="text-center">
+                            <form asp-action="Restore" method="post" class="d-inline" onsubmit="return confirm('Bhai, pakka restore karna hai na?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@backup.Id" />
+                                <button type="submit" class="btn btn-sm btn-success shadow-sm d-flex align-items-center justify-content-center gap-1">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    serialCount++;
+                }
+            </tbody>
+        </table>
+
+        @* 🔥 PAGINATION *@
+        <partial name="_Pagination" />
+    </div>
+</div>
+
+<style>
+    /* Table design improvements */
+    .table thead th {
+        background-color: #1e293b;
+        border: none;
+    }
+
+    .task-column {
+        max-width: 250px; /* Thoda badha diya taaki task dikhe */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f5f9;
+        transition: 0.2s;
+    }
+
+    .badge {
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+        .task-column {
+            max-width: 120px;
+        }
+    }
+</style>

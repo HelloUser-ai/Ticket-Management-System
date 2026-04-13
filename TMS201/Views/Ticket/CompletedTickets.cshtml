@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Ticket>
+
+<div class="main-wrapper">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold">Completed Tickets (Archived)</h3>
+
+        <a asp-action="Index" class="btn btn-sm btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>SR</th>
+                        <th>Ticket No</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Plant</th>
+                        <th>Task</th>
+                        <th>Assigned</th>
+                        <th>Status</th>
+                        <th>Completed Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int sr = 0;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        sr++;
+
+                        <tr>
+                            <td>@sr</td>
+                            <td class="fw-bold">@item.TicketNo</td>
+                            <td>@item.TicketDate.ToString("dd-MM-yyyy")</td>
+                            <td>@item.ClientName</td>
+                            <td>@item.PlantName</td>
+
+                            <td style="max-width:200px;">
+                                @(item.TaskDetails?.Length > 40
+                                    ? item.TaskDetails.Substring(0, 40) + "..."
+                                    : item.TaskDetails)
+                            </td>
+
+                            <td>
+                                <span class="badge bg-secondary">
+                                    @item.AssignedTo
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Completed
+                                </span>
+                            </td>
+
+                            <td>
+                                @(item.UpdatedDate?.ToString("dd-MM-yyyy HH:mm") ?? "-")
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

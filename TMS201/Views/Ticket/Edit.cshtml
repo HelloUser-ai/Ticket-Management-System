@@ -1,0 +1,166 @@
+﻿@model Ticket
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Edit Ticket";
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role") ?? "Employee";
+
+    // 1. Status Logic: Ek hi baar define kar lo taaki dropdown saaf rahe
+    var empOpts = new[] { "Pending", "Completed" };
+    var admOpts = new[] { "Pending", "Completed", "No Issue" };
+    var supOpts = new[] { "Pending", "In Progress", "Completed", "In Testing Phase", "In Dev Phase", "Pending from Client", "No Issue" };
+
+    string[] allowed;
+    if (role == "SuperAdmin") allowed = supOpts;
+    else if (role == "Admin") allowed = admOpts;
+    else allowed = empOpts;
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-dark text-white rounded-top-4 py-3">
+            <h3 class="text-center mb-0 fw-bold">✏️ Edit Ticket - @Model.TicketNo</h3>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                @* Hidden Fields - Important for data safety *@
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="TicketNo" />
+                <input type="hidden" asp-for="SerialNo" />
+                <input type="hidden" asp-for="TicketDate" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted">Ticket Date</label>
+                        <div class="p-2 border rounded bg-light">@Model.TicketDate.ToString("dd-MM-yyyy")</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Client Name</label>
+                        <select asp-for="ClientName" class="form-select border-primary-subtle" asp-items="@(new SelectList(ViewBag.ClientList))">
+                            <option value="">-- Select Client --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Plant Name</label>
+                        <select asp-for="PlantName" class="form-select" asp-items="@(new SelectList(ViewBag.PlantNames))">
+                            <option value="">-- Plant --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Plant Type</label>
+                        <select asp-for="PlantType" class="form-select" asp-items="@(new SelectList(ViewBag.PlantTypes))">
+                            <option value="">-- Module Type --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Given By</label>
+                        @* <select asp-for="GivenBy" class="form-select" asp-items="@(new SelectList(ViewBag.GivenByList))">
+                            <option value="">-- Person --</option>
+                        </select> *@
+
+                        <input asp-for="GivenBy" class="form-control" placeholder="Enter Given By" />
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-primary">Assigned To</label>
+                        @if (role == "TeamLead" || role == "SuperAdmin")
+                        {
+                            <select asp-for="AssignedTo" class="form-select border-primary" asp-items="@(new SelectList(ViewBag.AssignedToList))">
+                                <option value="">-- Assign Person --</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <div class="p-2 border rounded bg-light">
+                                <i class="bi bi-person-lock me-2"></i> @(Model.AssignedTo ?? "Not Assigned")
+                            </div>
+                            <input type="hidden" asp-for="AssignedTo" />
+                        }
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-primary">Current Status</label>
+                        <select asp-for="TicketStatus" class="form-select border-primary">
+                            @if (!allowed.Contains(Model.TicketStatus) && !string.IsNullOrEmpty(Model.TicketStatus))
+                            {
+                                <option value="@Model.TicketStatus" selected disabled>@Model.TicketStatus (Read-Only)</option>
+                            }
+                            @foreach (var st in allowed)
+                            {
+                                <option value="@st">@st</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Task Details</label>
+                        <textarea asp-for="TaskDetails" class="form-control" rows="4" placeholder="Update progress details..."></textarea>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-4">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-paperclip"></i> Add New Attachments
+                        <span class="badge bg-info text-dark ms-2">Max 50MB per file</span>
+                    </label>
+                    <input type="file" name="attachments" multiple class="form-control border-primary-subtle" />
+                    <small class="text-muted">You can select multiple files (Images, PDFs, etc.)</small>
+                </div>
+
+                @if (Model.Attachments != null && Model.Attachments.Any())
+                {
+                    <div class="col-12 mt-3">
+                        <label class="form-label fw-bold text-success">Existing Attachments:</label>
+                        <div class="list-group">
+                            @foreach (var file in Model.Attachments)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-file-earmark-check"></i> @file.FileName</span>
+                                    <a href="@file.FilePath" target="_blank" class="btn btn-sm btn-outline-info">View</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+
+                <div class="d-flex justify-content-center gap-3 mt-5 border-top pt-4">
+                    <button type="submit" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm">
+                        <i class="bi bi-cloud-arrow-up me-2"></i>Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-5 rounded-pill">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // File size check before upload
+        document.querySelector('input[name="attachments"]').addEventListener('change', function() {
+            const files = this.files;
+            const MAX_SIZE = 50 * 1024 * 1024; // 50MB in Bytes
+
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].size > MAX_SIZE) {
+                    alert(`Bhai, "${files[i].name}" bahut badi hai! 50MB se kam ki file select karo.`);
+                    this.value = ""; // Input clear kar do taaki badi file na jaye
+                    break;
+                }
+            }
+        });
+    </script>
+}

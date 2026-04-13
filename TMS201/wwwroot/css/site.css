@@ -1,0 +1,168 @@
+/* 🧠 GLOBAL RESET */
+* {
+    box-sizing: border-box;
+}
+
+/* 🚫 SCROLL SHIFT FIX */
+html {
+    overflow-y: scroll;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', sans-serif;
+    scrollbar-gutter: stable;
+}
+
+/* 📦 MAIN WRAPPER - Full Width Fix */
+.main-wrapper {
+    width: 100%; /* 100% width pakdega */
+    max-width: 100% !important; /* Koi bhi limit hata dega */
+    margin: 0; /* Side margins khatam */
+    padding: 0 20px; /* Halki si padding side se taaki chipke na */
+}
+
+/* Agar tumhe 1500px wali limit bilkul nahi chahiye toh niche wala media query uda do */
+@media (min-width: 1500px) {
+    .main-wrapper {
+        max-width: 100% !important; /* Yahan bhi 100% rakho */
+    }
+}
+
+/* 🔥 BOOTSTRAP GUTTER FIX */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* ===== FORM FIXES ===== */
+.form-control::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+/* Filters ke labels ka color white karne ke liye */
+label {
+    color: #ffffff !important;
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+}
+
+    .form-control:focus, .form-select:focus {
+        background: #1e293b;
+        color: #fff !important;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 1px #2563eb;
+    }
+
+/* 📦 CARD */
+.card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+}
+
+/* 📊 TABLE (FIXED RESPONSIVE) */
+.table-responsive {
+    overflow-x: auto !important; /* Force scroll for table only */
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+}
+
+.table {
+    width: 100% !important; /* Force karo ki table puri width le */
+    min-width: 100%;
+    table-layout: auto !important; /* ✅ CONTENT KE HISAB SE WIDTH LEGA */
+    color: #e2e8f0;
+    margin-bottom: 0;
+}
+
+    .table th, .table td {
+        white-space: nowrap; /* ✅ TEXT KO EK LINE MEIN RAKHEGA */
+        padding: 12px !important;
+        vertical-align: middle;
+    }
+
+/* 🧾 TASK COLUMN (Sirf isko allow karo wrap hona) */
+.task-column {
+    white-space: normal !important;
+    min-width: 250px;
+    max-width: 350px;
+    word-break: break-word;
+}
+
+/* 🎯 ROW COLORS & HOVER */
+.table tbody tr:nth-child(odd) {
+    background: #0f172a;
+}
+
+.table tbody tr:nth-child(even) {
+    background: #1e293b;
+}
+
+.table tbody tr:hover {
+    background: #1d4ed8 !important;
+    color: #fff !important;
+    transition: 0.2s;
+}
+
+/* 🔘 BUTTONS */
+.btn-primary {
+    background: #2563eb;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+/* 📄 PAGINATION */
+.pagination .page-link {
+    background: #1e293b;
+    color: #cbd5f5;
+    border: none;
+    margin: 0 2px;
+    border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+    .table {
+        font-size: 12px;
+    }
+
+    .task-column {
+        min-width: 180px;
+    }
+}
+
+/* ===== SIDEBAR & MAIN CONTENT ===== */
+#sidebar {
+    width: 250px;
+    transition: 0.3s ease;
+}
+
+#mainContent {
+    transition: 0.3s ease;
+    width: 100%;
+}
+
+
+
+
+/*-----------------------------------------------------------------------------------------*/

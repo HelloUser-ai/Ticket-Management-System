@@ -1,0 +1,262 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+
+<link href="~/css/dashboard.css" rel="stylesheet" />
+
+<div class="container-fluid mt-4 pb-5">
+    
+    <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">📊 Analytics Dashboard</h2>
+            <p class="text-muted mb-0 text-white-50">Real-time ticket monitoring and plant performance</p>
+        </div>
+        <a asp-controller="Ticket" asp-action="Index" class="btn btn-primary px-4 shadow-sm" style="border-radius: 12px;">
+            <i class="bi bi-grid-3x3-gap-fill me-2"></i> View All Tickets
+        </a>
+    </div>
+
+    <div class="card filter-section mb-4 shadow-sm" style="background: #2b2d42; border: none; border-radius: 15px;">
+        <div class="card-body p-4">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label class="small text-white-50 mb-2 fw-bold text-uppercase" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-search me-1"></i> Search Query
+                    </label>
+                    <input type="text" name="search" value="@ViewBag.Search"
+                           class="form-control bg-dark text-white border-secondary"
+                           placeholder="Plant, Type or Client..." style="border-radius: 8px;">
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <label class="small text-white-50 mb-2 fw-bold text-uppercase" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-info-circle me-1"></i> Status
+                    </label>
+                    <select name="status" class="form-select bg-dark text-white border-secondary" style="border-radius: 8px;">
+                        <option value="">All Statuses</option>
+                        @if (ViewBag.StatusLabels != null)
+                        {
+                            foreach (var s in ViewBag.StatusLabels)
+                            {
+                                <option value="@s" selected="@(ViewBag.Status == s)">@s</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <label class="small text-white-50 mb-2 fw-bold text-uppercase">From Date</label>
+                    <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control bg-dark text-white border-secondary" style="border-radius: 8px;">
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <label class="small text-white-50 mb-2 fw-bold text-uppercase">To Date</label>
+                    <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control bg-dark text-white border-secondary" style="border-radius: 8px;">
+                </div>
+
+                <div class="col-lg-3 col-md-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1 shadow-sm" style="height: 46px; border-radius: 10px; font-weight: 600;">
+                        <i class="bi bi-funnel-fill me-1"></i> Apply Filters
+                    </button>
+                    <a asp-action="Dashboard" class="btn btn-outline-secondary" title="Reset Filters"
+                           style="width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-gradient-blue shadow">
+                <h6>Total Managed</h6>
+                <h2>@ViewBag.Total</h2>
+                <i class="bi bi-ticket-perforated stat-icon"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-gradient-amber shadow">
+                <h6>Awaiting Action</h6>
+                <h2>@ViewBag.PendingCount</h2>
+                <i class="bi bi-hourglass-split stat-icon"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-gradient-green shadow">
+                <h6>Resolved</h6>
+                <h2>@ViewBag.CompletedCount</h2>
+                <i class="bi bi-check2-circle stat-icon"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-gradient-gray shadow">
+                <h6>In Pipeline</h6>
+                <h2>@((int)ViewBag.Total - (int)ViewBag.PendingCount - (int)ViewBag.CompletedCount)</h2>
+                <i class="bi bi-gear-wide-connected stat-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card chart-box shadow">
+                <h5><i class="bi bi-graph-up text-primary"></i> 7-Day Resolution Trend</h5>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-6">
+            <div class="card chart-box shadow">
+                <h5><i class="bi bi-pie-chart text-warning"></i> Status Breakdown</h5>
+                <div style="height: 250px;">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div id="customLegend" class="custom-legend"></div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-6">
+            <div class="card chart-box shadow">
+                <h5><i class="bi bi-building text-info"></i> Tickets by Plant</h5>
+                <div style="height: 300px;">
+                    <canvas id="plantChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-12">
+            <div class="card chart-box shadow">
+                <h5><i class="bi bi-people text-success"></i> Team Workload</h5>
+                <div style="height: 300px;">
+                    <canvas id="employeeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Config Colors
+    const statusPallete = {
+        'Pending': '#f59e0b',
+        'Completed': '#22c55e',
+        'In Dev Phase': '#ec4899',
+        'In Testing Phase': '#8b5cf6',
+        'In Progress': '#3b82f6',
+        'Pending from Client': '#ef4444',
+        'No Issue': '#64748b'
+    };
+
+    const sLabels = @Html.Raw(Json.Serialize(ViewBag.StatusLabels));
+    const sCounts = @Html.Raw(Json.Serialize(ViewBag.StatusCounts));
+    const sColors = sLabels.map(l => statusPallete[l] || '#' + Math.floor(Math.random()*16777215).toString(16));
+
+    // Dynamic Legend Logic
+    const legendDiv = document.getElementById('customLegend');
+    sLabels.forEach((label, i) => {
+        legendDiv.innerHTML += `
+            <div class="legend-item">
+                <div class="dot" style="background:${sColors[i]}"></div>
+                <span>${label}: <strong>${sCounts[i]}</strong></span>
+            </div>`;
+    });
+
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    // Line Chart
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(ViewBag.ChartDates)),
+            datasets: [{
+                label: 'New Tickets',
+                data: @Html.Raw(Json.Serialize(ViewBag.ChartCounts)),
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#3b82f6',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Pie Chart
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: sLabels,
+            datasets: [{
+                data: sCounts,
+                backgroundColor: sColors,
+                borderWidth: 0,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Plant Chart
+    new Chart(document.getElementById('plantChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize(ViewBag.PlantNames)),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(ViewBag.PlantCounts)),
+                backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                borderRadius: 8
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Employee Chart
+    new Chart(document.getElementById('employeeChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize(ViewBag.Employees)),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(ViewBag.EmployeeCounts)),
+                backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+</script>

@@ -1,0 +1,24 @@
+﻿@model TMS201.Models.Employee
+
+<div class="container mt-4">
+
+    <h3 class="mb-3">✏️ Edit Employee</h3>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-2">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="mb-2">
+            <label>Designation</label>
+            <input asp-for="Designation" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Update</button>
+        <a asp-action="Index" class="btn btn-secondary">Back</a>
+    </form>
+
+</div>

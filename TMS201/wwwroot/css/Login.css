@@ -1,0 +1,313 @@
+﻿:root {
+    --primary-green: #22c55e;
+    --dark-green: #16a34a;
+    --bg-dark: #020617;
+    --glass-bg: rgba(255,255,255,0.05);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top left,#0f172a,var(--bg-dark));
+    color: white;
+    font-family: 'Inter',sans-serif;
+    overflow-x: hidden;
+}
+
+.container-main {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.top-nav {
+    position: absolute;
+    top: 25px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 100;
+}
+
+.logo-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg,var(--primary-green),var(--dark-green));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(34,197,94,0.4);
+}
+
+.brand-name {
+    font-family: 'Dancing Script',cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(to right,#ffffff,#4ade80);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.status-strip {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    color: #94a3b8;
+    z-index: 100;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary-green);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px var(--primary-green);
+    animation: pulse 1.5s infinite;
+}
+
+.left-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10%;
+    background: rgba(34,197,94,0.03);
+    overflow: hidden;
+}
+
+    .left-section::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 10%;
+        height: 80%;
+        width: 2px;
+        background: linear-gradient(to bottom,transparent,var(--primary-green),transparent);
+        box-shadow: 0 0 15px var(--primary-green);
+    }
+
+.left-content {
+    position: relative;
+    z-index: 5;
+}
+
+    .left-content h1 {
+        font-size: clamp(2rem,5vw,3.5rem);
+        font-weight: 800;
+        background: linear-gradient(to right,#ffffff,#4ade80);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+    }
+
+    .left-content p {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        max-width: 450px;
+        line-height: 1.6;
+    }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+    gap: 15px;
+    margin-top: 50px;
+}
+
+.stat-card {
+    background: var(--glass-bg);
+    padding: 20px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+}
+
+    .stat-card:hover {
+        border-color: var(--primary-green);
+        transform: translateY(-5px);
+    }
+
+    .stat-card i {
+        font-size: 1.8rem;
+        color: var(--primary-green);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+.right-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background: rgba(0,0,0,0.2);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 45px;
+    position: relative;
+}
+
+.card-header-custom {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+    .card-header-custom h2 {
+        font-weight: 700;
+        color: #f8fafc;
+        letter-spacing: -0.5px;
+    }
+
+.input-group-custom {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+    .input-group-custom i:first-child {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-green);
+        font-size: 1.1rem;
+    }
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    cursor: pointer;
+    z-index: 10;
+    padding: 5px;
+    transition: 0.3s;
+}
+
+    .toggle-password:hover {
+        color: var(--primary-green);
+    }
+
+.form-control {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white !important;
+    padding: 14px 45px 14px 45px;
+    border-radius: 14px;
+    transition: 0.3s;
+}
+
+    .form-control:focus {
+        background: rgba(255,255,255,0.08) !important;
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
+    }
+
+.btn-login {
+    background: linear-gradient(90deg,var(--primary-green),var(--dark-green));
+    border: none;
+    padding: 14px;
+    border-radius: 14px;
+    font-weight: 600;
+    color: white;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(34,197,94,0.3);
+    }
+
+/* YAHAN DEKHO: Sab jagah single '@' kar diya hai */
+
+@media (max-width:1024px) {
+    .container-main {
+        grid-template-columns: 1fr;
+    }
+
+    .left-section {
+        padding-top: 120px;
+        border-right: none;
+        text-align: center;
+    }
+
+        .left-section::after {
+            display: none;
+        }
+
+    .left-content p {
+        margin: 0 auto;
+    }
+
+    .stats-grid {
+        justify-content: center;
+    }
+
+    .status-strip {
+        display: none;
+    }
+
+    .top-nav {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* MOBILE FIX */
+@media(max-width:768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .login-card {
+        padding: 35px 25px;
+    }
+
+    .right-section {
+        padding: 20px;
+    }
+}
+
+@media(max-width:480px) {
+    .brand-name {
+        font-size: 1.5rem;
+    }
+
+    .left-content h1 {
+        font-size: 2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .login-card {
+        padding: 28px 20px;
+        border-radius: 20px;
+    }
+}

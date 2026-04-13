@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saba Technosoft - Login</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Dancing+Script:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="~/css/Login.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+<div class="container-main">
+
+        <div class="top-nav">
+            <div class="logo-box">
+                <img src="~/images/logo.png" alt="Logo" style="width: 80%; height: 80%; object-fit: contain;">
+                </div>
+                <span class="brand-name">Saba Technosoft</span>
+            </div>
+
+<div class="status-strip">
+<span><div class="status-dot"></div> System Online</span>
+<span><i class="bi bi-shield-check me-1"></i> SSL Protected</span>
+</div>
+
+<section class="left-section">
+
+<div class="left-content">
+
+<div class="badge rounded-pill mb-3" style="background:rgba(34,197,94,0.1);color:#4ade80;border:1px solid rgba(34,197,94,0.2);padding:8px 16px;">
+<i class="bi bi-lightning-charge-fill me-1"></i> Performance Driven
+</div>
+
+<h1>System Gateway</h1>
+
+<p>
+Manage your infrastructure, track real-time tickets,
+and maintain peak system health through our centralized hub.
+</p>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<i class="bi bi-activity"></i>
+<div class="small text-light-emphasis">Uptime</div>
+<div class="fw-bold fs-5">99.9%</div>
+</div>
+
+<div class="stat-card">
+<i class="bi bi-ticket-perforated"></i>
+<div class="small text-light-emphasis">Resolved</div>
+<div class="fw-bold fs-5">1.2k+</div>
+</div>
+
+<div class="stat-card">
+<i class="bi bi-hdd-network"></i>
+<div class="small text-light-emphasis">Nodes</div>
+<div class="fw-bold fs-5">24 Active</div>
+</div>
+
+</div>
+
+</section>
+
+<section class="right-section">
+
+<div class="login-card shadow-2xl">
+
+<div class="card-header-custom">
+<h2>Welcome Back</h2>
+<p class="text-light-emphasis small">Authenticating your secure session</p>
+</div>
+
+<form asp-action="Login" method="post">
+
+<div class="input-group-custom">
+<i class="bi bi-person-bounding-box"></i>
+<input type="text" name="Username" class="form-control" placeholder="Username" required>
+</div>
+
+<div class="input-group-custom">
+<i class="bi bi-shield-lock"></i>
+<input type="password" name="Password" id="passwordField" class="form-control" placeholder="Password" required>
+<i class="bi bi-eye-slash toggle-password" id="eyeIcon"></i>
+</div>
+
+<div class="text-end mb-4 px-1">
+<a href="#" data-bs-toggle="modal" data-bs-target="#retrieveModal" class="small text-success text-decoration-none fw-600">Retrieve Credentials?</a>
+</div>
+
+<div class="d-grid">
+<button type="submit" class="btn btn-login">
+Login to Dashboard <i class="bi bi-box-arrow-in-right ms-2"></i>
+</button>
+</div>
+
+
+</form>
+
+</div>
+
+</section>
+
+</div>
+
+
+<div class="modal fade" id="retrieveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white">Retrieve Credentials</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="text-light-emphasis small mb-2">Enter your registered username</label>
+                    <input type="text" id="retrieveUsername" class="form-control" placeholder="e.g. admin123">
+                </div>
+                <div id="passwordResult" class="alert alert-success d-none mt-3" style="word-break: break-all;">
+                    Your Password: <strong id="showPass"></strong>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="fetchPassword()" class="btn btn-success">Find Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/account-login.js"></script>
+
+</body>
+</html>

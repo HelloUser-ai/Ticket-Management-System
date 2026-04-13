@@ -1,0 +1,46 @@
+﻿@* Views/Shared/_Pagination.cshtml *@
+@{
+    int currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    int totalPages = (int)(ViewBag.TotalPages ?? 1);
+}
+
+@if (totalPages > 1)
+{
+    <nav class="mt-4 pb-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link shadow-sm" href="@Url.Action("Index", new { 
+                    page = currentPage - 1, 
+                    search = ViewBag.PlantFilter, 
+                    status = ViewBag.StatusFilter, 
+                    fromDate = ViewBag.FromDateFilter, 
+                    toDate = ViewBag.ToDateFilter, 
+                    viewType = ViewBag.ViewType,
+                    assignedTo = ViewBag.AssignedToFilter 
+                })">
+                    <i class="bi bi-chevron-left"></i> Prev
+                </a>
+            </li>
+            
+            <li class="page-item disabled">
+                <span class="page-link bg-dark text-white border-0 mx-2 rounded">
+                    Page <b>@currentPage</b> of <b>@totalPages</b>
+                </span>
+            </li>
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link shadow-sm" href="@Url.Action("Index", new { 
+                    page = currentPage + 1, 
+                    search = ViewBag.PlantFilter, 
+                    status = ViewBag.StatusFilter, 
+                    fromDate = ViewBag.FromDateFilter, 
+                    toDate = ViewBag.ToDateFilter, 
+                    viewType = ViewBag.ViewType,
+                    assignedTo = ViewBag.AssignedToFilter
+                })">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

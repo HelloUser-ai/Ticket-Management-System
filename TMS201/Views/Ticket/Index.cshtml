@@ -1,0 +1,380 @@
+﻿@model IEnumerable<Ticket>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@TempData["Success"]',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        });
+    </script>
+}
+
+
+@{
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role") ?? "Employee";
+    var plantFilter = ViewBag.PlantFilter as string;
+    var statusFilter = ViewBag.StatusFilter as string;
+    var fromDateFilter = ViewBag.FromDateFilter as string;
+    var toDateFilter = ViewBag.ToDateFilter as string;
+    
+    bool isAdmin = (role == "Admin" || role == "SuperAdmin");
+    bool isLeadOrSuper = (role == "TeamLead" || role == "SuperAdmin");
+}
+
+<div class="main-wrapper">
+    <h3 class="fw-bold my-3">Ticket List</h3>
+
+    @* --- Filter Form --- *@
+    <form method="get" id="filterForm" class="card p-3 mb-3 shadow-sm border-0">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small">Client Name</label>
+                <select name="clientName" class="form-select form-select-sm">
+                    <option value="">-- All Clients --</option>
+                    @if (ViewBag.ClientList != null)
+                    {
+                        foreach (var client in (List<string>)ViewBag.ClientList)
+                        {
+                            <option value="@client" selected="@(ViewBag.ClientFilter == client)">@client</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small">Plant Name</label>
+                <input type="text" name="search" class="form-control form-control-sm" value="@plantFilter" placeholder="Search..." />
+            </div>
+        
+            <div class="col-md-2">
+                <label class="form-label small">Status</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Status</option>
+                    <option value="Pending" selected="@(statusFilter == "Pending")">Pending</option>
+                    <option value="In Progress" selected="@(statusFilter == "In Progress")">In Progress</option>
+                    <option value="Completed" selected="@(statusFilter == "Completed")">Completed</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex gap-1">
+                <div class="w-50">
+                    <label class="form-label small">From</label>
+                    <input type="date" name="fromDate" class="form-control form-control-sm" value="@fromDateFilter" />
+                </div>
+                <div class="w-50">
+                    <label class="form-label small">To</label>
+                    <input type="date" name="toDate" class="form-control form-control-sm" value="@toDateFilter" />
+                </div>
+            </div>
+
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-search"></i> Search</button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i></a>
+            </div>
+        </div>
+    </form>
+
+    @* --- Action Buttons --- *@
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 p-2">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            @* Fix: Function name matched to handleExport *@
+            <button type="button" onclick="handleExport('Excel')" class="btn btn-sm btn-success d-flex align-items-center gap-1">
+                <i class="bi bi-file-earmark-excel"></i> Excel
+            </button>
+            <button type="button" onclick="handleExport('Pdf')" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+            </button>
+
+            <div class="vr d-none d-md-block mx-2 text-secondary"></div>
+
+            @if (role == "Employee")
+            {
+                <div class="btn-group shadow-sm border rounded bg-white">
+                    <a href="@Url.Action("Index", new { viewType = "assigned" })"
+                           class="btn btn-sm px-3 d-flex align-items-center @(ViewBag.ViewType == "assigned" ? "btn-primary active shadow-none" : "btn-white text-dark border-0 hover-bg-light")"
+                           style="@(ViewBag.ViewType != "assigned" ? "transition: 0.3s;" : "")">
+                        <i class="bi bi-person-check me-1"></i> Assigned
+                    </a>
+    
+                    @* All Tickets button: isme 'border-start' lagaya hai taaki dono ke beech halki line dikhe *@
+                    <a href="@Url.Action("Index", new { viewType = "all" })"
+                           class="btn btn-sm px-3 d-flex align-items-center border-start @(ViewBag.ViewType == "all" ? "btn-primary active shadow-none" : "btn-white text-dark border-0")"
+                           onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.color='#0d6efd';"
+                           onmouseout="this.style.backgroundColor='transparent'; this.style.color='black';"
+                           style="transition: 0.3s;">
+                        <i class="bi bi-list-task me-1"></i> All Tickets
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            @if (role == "SuperAdmin")
+            {
+                <form asp-action="ImportExcel" method="post" enctype="multipart/form-data" class="d-flex gap-1">
+                    @Html.AntiForgeryToken()
+                    <input type="file" name="file" class="form-control form-control-sm" style="width: 180px;" required />
+                    <button type="submit" class="btn btn-sm btn-warning">
+                        <i class="bi bi-upload"></i> Import
+                    </button>
+                </form>
+            }
+
+            @if (isAdmin)
+            {
+                <a asp-action="Create" class="btn btn-sm btn-primary fw-bold">
+                    <i class="bi bi-plus-lg"></i> Create Ticket
+                </a>
+            }
+        </div>
+    </div>
+
+    @* --- Table Section --- *@
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" style="font-size: 0.85rem;">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">SR</th>
+                        <th>Ticket No</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Plant</th>
+                        <th>Module</th>
+                        <th>Given By</th>
+                        <th>Assigned</th>
+                        <th>Task</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Files</th>
+                        <th>Update Status</th>
+                        @if (isAdmin)
+                        {
+                            <th class="border-start">History</th>
+                            <th>Actions</th>
+                        }
+                        @if (isLeadOrSuper)
+                        {
+                            <th>Assign To</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int page = (int)(ViewBag.CurrentPage ?? 1);
+                        int pageSize = (int)(ViewBag.PageSize ?? 10);
+                        int sr = (page - 1) * pageSize;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        sr++;
+                        var isOld = item.TicketStatus == "Pending" && (DateTime.Now - item.TicketDate).TotalHours > 48;
+                        
+                        var statusConfig = item.TicketStatus switch
+                        {
+                            "Pending" => new { Badge = isOld ? "bg-danger" : "bg-warning text-dark", Icon = "bi-clock", Row = isOld ? "table-danger" : "table-warning" },
+                            "In Progress" => new { Badge = "bg-info text-dark", Icon = "bi-gear-fill", Row = "table-info" },
+                            "Completed" => new { Badge = "bg-success", Icon = "bi-check-circle", Row = "table-success" },
+                            "In Testing Phase" => new { Badge = "bg-primary", Icon = "bi-bug", Row = "table-primary" },
+                            "In Dev Phase" => new { Badge = "bg-dark", Icon = "bi-code-slash", Row = "table-secondary" },
+                            "Pending from Client" => new { Badge = "bg-danger", Icon = "bi-person-exclamation", Row = "table-danger" },
+                            "No Issue" => new { Badge = "bg-secondary", Icon = "bi-slash-circle", Row = "table-light" },
+                            _ => new { Badge = "bg-light text-dark", Icon = "bi-question", Row = "" }
+                        };
+
+                        <tr onclick="openTicket(@item.Id)" style="cursor:pointer;" class="@statusConfig.Row">
+                            <td class="text-center fw-bold">@sr.ToString("D4")</td>
+                            <td class="fw-semibold">@item.TicketNo</td>
+                            <td>@item.TicketDate.ToString("dd-MM-yyyy")</td>
+                            <td>@item.ClientName</td>
+                            <td>@item.PlantName</td>
+                            <td><span class="badge bg-light text-dark border">@item.PlantType</span></td>
+                            <td>@item.GivenBy</td>
+                            <td><span class="badge bg-secondary">@item.AssignedTo</span></td>
+                            <td class="text-truncate" style="max-width: 120px;" title="@item.TaskDetails">
+                                @item.TaskDetails
+                            </td>
+                            
+                            <td class="text-center">
+                                <span class="badge rounded-pill @statusConfig.Badge shadow-sm px-2 py-1" style="min-width: 100px;">
+                                    <i class="bi @statusConfig.Icon me-1"></i> @item.TicketStatus
+                                </span>
+                            </td>
+
+                            <td class="text-center" onclick="event.stopPropagation()">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light border position-relative" data-bs-toggle="dropdown">
+                                        <i class="bi bi-paperclip"></i>
+                                        @if (item.Attachments?.Count > 0)
+                                        {
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                                @item.Attachments.Count
+                                            </span>
+                                        }
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                                        <li><a class="dropdown-item" href="/Ticket/ViewAttachments/@item.Id"><i class="bi bi-eye me-2"></i>View</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+
+                            <td onclick="event.stopPropagation()">
+                                @{
+                                    var employeeOptions = new[] { "Pending", "Completed" };
+                                    var adminOptions = new[] { "Pending", "Completed", "No Issue" };
+                                    var superAdminOptions = new[] { "Pending", "In Progress", "Completed", "In Testing Phase", "In Dev Phase", "Pending from Client", "No Issue" };
+
+                                    string[] currentAllowedOptions = role switch
+                                    {
+                                        "SuperAdmin" => superAdminOptions,
+                                        "Admin" => adminOptions,
+                                        _ => employeeOptions
+                                    };
+                                }
+                                <select class="form-select form-select-sm w-auto" onchange="updateStatus(@item.Id, this.value)" style="font-size: 0.75rem;">
+                                    @if (!currentAllowedOptions.Contains(item.TicketStatus))
+                                    {
+                                        <option value="@item.TicketStatus" selected disabled>@item.TicketStatus</option>
+                                    }
+                                    @foreach (var opt in currentAllowedOptions)
+                                    {
+                                        <option value="@opt" selected="@(item.TicketStatus == opt)">@opt</option>
+                                    }
+                                </select>
+                            </td>
+
+                            @if (isAdmin)
+                            {
+                                <td class="border-start" style="font-size: 0.7rem;">
+                                    <div class="fw-bold text-dark">By: @item.CreatedBy</div>
+                                    <div class="text-muted">@item.CreatedDate?.ToString("dd/MM/yy HH:mm")</div>
+                                </td>
+                                <td onclick="event.stopPropagation()">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary py-0 px-2"><i class="bi bi-pencil"></i></a>
+                                        <form asp-action="Delete" method="post" class="d-inline delete-form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 delete-btn">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            }
+
+                            @if (isLeadOrSuper)
+                            {
+                                <td onclick="event.stopPropagation()">
+                                    <select class="form-select form-select-sm" onchange="assignTicket(@item.Id, this.value)" style="font-size: 0.75rem; min-width: 110px;">
+                                        <option value="">-- Assign --</option>
+                                        @foreach (var emp in ViewBag.AssignedToList ?? new List<string>())
+                                        {
+                                            <option value="@emp" selected="@(emp == item.AssignedTo)">@emp</option>
+                                        }
+                                    </select>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_Pagination" />
+</div>
+
+<script>
+    window.ticketIndexConfig = {
+        viewType: '@(ViewBag.ViewType ?? "all")'
+    };
+
+        function assignTicket(ticketId, assignedTo) {
+        if (!assignedTo) return;
+        if (!confirm("Assign this ticket to " + assignedTo + "?")) return;
+
+        fetch('/Ticket/AssignTicket', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: ticketId, assignedTo: assignedTo })
+        })
+        .then(res => res.json())
+        .then(data => data.success ? location.reload() : alert("Assignment failed"));
+    }
+
+    function updateStatus(ticketId, status) {
+        fetch('/Ticket/UpdateStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: ticketId, status: status })
+        })
+        .then(res => res.json())
+        .then(data => data.success ? location.reload() : alert("Status update failed"));
+    }
+
+    function openTicket(id) {
+        window.location.href = '/Ticket/Details/' + id;
+    }
+
+    function handleExport(format) {
+        const clientName = document.querySelector('select[name="clientName"]').value;
+        const search = document.querySelector('input[name="search"]').value;
+        const status = document.querySelector('select[name="status"]').value;
+        const fromDate = document.querySelector('input[name="fromDate"]').value;
+        const toDate = document.querySelector('input[name="toDate"]').value;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const fallbackViewType = (window.ticketIndexConfig && window.ticketIndexConfig.viewType) || 'all';
+        const viewType = urlParams.get('viewType') || fallbackViewType;
+
+        const baseUrl = format === 'Excel' ? '/Ticket/ExportExcel' : '/Ticket/ExportPdf';
+        const params = new URLSearchParams({
+            search: search,
+            status: status,
+            clientName: clientName,
+            assignedTo: "",
+            fromDate: fromDate,
+            toDate: toDate,
+            viewType: viewType
+        });
+
+        window.location.href = baseUrl + '?' + params.toString();
+    }
+
+
+
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+
+            let form = this.closest("form");
+
+            Swal.fire({
+                 title: "Delete Ticket?",
+                 text: "The ticket will be deleted permanently!",
+                 icon: "warning",
+                 showCancelButton: true,
+                 confirmButtonColor: "#d33",
+                 cancelButtonColor: "#6c757d",
+                 confirmButtonText: "Yes, Delete",
+                 cancelButtonText: "Cancel"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+
+            });
+
+        });
+    });
+</script>
+<script src="/js/ticket-index.js"></script>

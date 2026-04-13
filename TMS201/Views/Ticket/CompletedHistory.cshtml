@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Ticket>
+
+<div class="main-wrapper">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h3 class="fw-bold">Archive: Completed Tickets (> 3 Days)</h3>
+        <a asp-action="Index" class="btn btn-sm btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Active Tickets
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" style="font-size: 0.85rem;">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">SR</th>
+                        <th>Ticket No</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Plant</th>
+                        <th>Task</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Completed On</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">No completed records found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        int sr = 0;
+                        foreach (var item in Model)
+                        {
+                            sr++;
+                            <tr>
+                                <td class="text-center fw-bold">@sr.ToString("D4")</td>
+                                <td class="fw-semibold">@item.TicketNo</td>
+                                <td>@item.TicketDate.ToString("dd-MM-yyyy")</td>
+                                <td>@item.ClientName</td>
+                                <td>@item.PlantName</td>
+                                <td class="text-truncate" style="max-width: 200px;">@item.TaskDetails</td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill bg-success px-2 py-1">
+                                        <i class="bi bi-check-circle me-1"></i> @item.TicketStatus
+                                    </span>
+                                </td>
+                                <td class="text-center text-muted">
+                                    @(item.UpdatedDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                                </td>
+                                <td class="text-center">
+                                    @* --- RESTORE BUTTON --- *@
+                                    <button class="btn btn-sm btn-outline-warning fw-bold"
+                                            onclick="restoreTicket(@item.Id)">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function restoreTicket(ticketId) {
+        if (!confirm("Bhai, kya aap is ticket ko wapas Active list mein bhejna chahte ho?")) return;
+
+        // Hum status ko wapas 'In Progress' kar rahe hain taaki ye Index pe dikhne lage
+        fetch('/Ticket/UpdateStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: ticketId, status: 'In Progress' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Ticket successfully restore ho gayi!");
+                location.reload();
+            } else {
+                alert("Restore failed!");
+            }
+        });
+    }
+</script>
