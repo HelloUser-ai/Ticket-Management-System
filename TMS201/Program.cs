@@ -11,36 +11,43 @@ var builder = WebApplication.CreateBuilder(args);
 // ✅ Add services
 builder.Services.AddControllersWithViews();
 
-// 🔥 ADD THIS (IMPORTANT)
+// ✅ SignalR
 builder.Services.AddSignalR();
 
-// ✅ Register Report Service
+// ✅ Custom Services
 builder.Services.AddScoped<IReportService, ReportService>();
-
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 
-
+// ✅ Session + HttpContext
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
-// ✅ DbContext
+// ✅ DbContext (connection string from config)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-
-builder.Services.Configure<FormOptions>(options => {
-    options.MultipartBodyLengthLimit = 52428800; // 50 MB
+// ✅ File upload limit (50MB)
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 52428800;
 });
 
-builder.WebHost.ConfigureKestrel(options => {
-    options.Limits.MaxRequestBodySize = 52428800; // 50 MB
+// ✅ Kestrel config (50MB)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 52428800;
 });
-
 
 var app = builder.Build();
 
+// ✅ Error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -49,18 +56,21 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
+// ✅ Session MUST be before Authorization
 app.UseSession();
+
 app.UseAuthorization();
 
-//app.UseSession();  // 🔥 must
-
+// ✅ Routing
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}"
 );
 
-app.MapHub<NotificationHub>("/notificationHub"); // 🔥 must
+// ✅ SignalR Hub
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();
